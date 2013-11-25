@@ -152,6 +152,7 @@
             showSelectionPalette = opts.showSelectionPalette,
             localStorageKey = opts.localStorageKey,
             theme = opts.theme,
+            nipple = opts.nipple,
             callbacks = opts.callbacks,
             resize = throttle(reflow, 10),
             visible = false,
