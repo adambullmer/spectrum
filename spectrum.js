@@ -32,6 +32,7 @@
         className: "",
         showAlpha: false,
         theme: "sp-light",
+        nipple: false,
         palette: ['fff', '000'],
         selectionPalette: [],
         disabled: false
@@ -142,6 +143,7 @@
             showSelectionPalette = opts.showSelectionPalette,
             localStorageKey = opts.localStorageKey,
             theme = opts.theme,
+            nipple = opts.nipple,
             callbacks = opts.callbacks,
             resize = throttle(reflow, 10),
             visible = false,
@@ -710,7 +712,44 @@
 
             if (!flat) {
                 container.css("position", "absolute");
-                container.offset(getOffset(container, offsetElement));
+                var containerOffset = getOffset(container, offsetElement);
+
+                /*===================================
+                =            CUSTOM CODE            =
+                ===================================*/
+                /**
+                *
+                * Checks the positioning of the picker and adds a class to describe
+                * where the nipple should be replaces with respect to the picker
+                * and the preview
+                *
+                * Offsets the window up/down to allow room for the nipple
+                * Offsets the window left/right to center the nipple in the preview
+                * @AUTHOR: Adam Bullmer
+                * @DATE: 10/30/2013
+                *
+                **/
+                if (nipple) {
+                    var elementOffset = offsetElement.offset();
+
+                    // Decide if the nipple will be showing above or below the window
+                    if (elementOffset.top < containerOffset.top) {
+                        container.addClass('nipple-above');
+                        container.removeClass('nipple-below');
+                        containerOffset.top += 15;
+                    }
+                    else {
+                        container.addClass('nipple-below');
+                        container.removeClass('nipple-above');
+                        containerOffset.top -= 15;
+                    }
+
+                    // Offset the container to compensate for centering the nipple
+                    containerOffset.left -= 55-((offsetElement.outerWidth()) / 2);
+                }
+                /*-----  End of CUSTOM CONTENT  ------*/
+
+                container.offset(containerOffset);
             }
 
             updateHelperLocations();
@@ -793,6 +832,7 @@
             Math.min(offset.left, (offset.left + dpWidth > viewWidth && viewWidth > dpWidth) ?
             Math.abs(offset.left + dpWidth - viewWidth) : 0);
 
+        var offsetDirection = input.offset;
         offset.top -=
             Math.min(offset.top, ((offset.top + dpHeight > viewHeight && viewHeight > dpHeight) ?
             Math.abs(dpHeight + inputHeight - extraY) : extraY));
