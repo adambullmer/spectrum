@@ -33,6 +33,7 @@
         className: "",
         showAlpha: false,
         theme: "sp-light",
+        nipple: false,
         palette: ['fff', '000'],
         selectionPalette: [],
         disabled: false
@@ -799,6 +800,43 @@
             if (!flat) {
                 container.css("position", "absolute");
                 container.offset(getOffset(container, offsetElement));
+            }
+
+			/*===================================
+            =            CUSTOM CODE            =
+            ===================================*/
+            /**
+            *
+            * Checks the positioning of the picker and adds a class to describe
+            * where the nipple should be replaces with respect to the picker
+            * and the preview
+            *
+            * Offsets the window up/down to allow room for the nipple
+            * Offsets the window left/right to center the nipple in the preview
+            * @AUTHOR: Adam Bullmer
+            * @DATE: 11/25/2013
+            *
+            **/
+            if (nipple) {
+                var elementOffset = offsetElement.offset();
+
+                // Decide if the nipple will be showing above or below the window
+                if (elementOffset.top < containerOffset.top) {
+                    container.addClass('nipple-above');
+                    container.removeClass('nipple-below');
+                    containerOffset.top += 15;
+                }
+                else {
+                    container.addClass('nipple-below');
+                    container.removeClass('nipple-above');
+                    containerOffset.top -= 15;
+                }
+
+                // Offset the container to compensate for centering the nipple
+                containerOffset.left -= 55-((offsetElement.outerWidth()) / 2);
+                /*-----  End of CUSTOM CONTENT  ------*/
+
+                container.offset(containerOffset);
             }
 
             updateHelperLocations();
